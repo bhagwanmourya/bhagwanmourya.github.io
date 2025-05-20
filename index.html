@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Portfolio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-color: #000000;
+    }
+  </style>
+</head>
+<body class="text-white font-sans bg-blue">
+
+  <!-- Navbar -->
+  <nav class="bg-blue/10 backdrop-blur-md shadow-md p-4 flex justify-between items-center sticky top-0 z-50">
+    <h1 class="text-xl font-bold text-blue-400">My Portfolio</h1>
+    <ul class="flex space-x-4">
+      <li><a href="#about" class="hover:text-pink-400 transition duration-200">About</a></li>
+      <li><a href="#achievements" class="hover:text-pink-400 transition duration-200">Achievements</a></li>
+      <li><a href="#goals" class="hover:text-pink-400 transition duration-200">Goals</a></li>
+      <li><a href="#contact" class="hover:text-pink-400 transition duration-200">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- Header Section -->
+  <header class="text-center py-10 bg-white/10 backdrop-blur-md shadow-inner">
+    <h2 class="text-4xl font-bold mb-2 text-white">Welcome to My Personal Portfolio</h2>
+    <p class="font-bold text-white text-lg">Hello I am Bhagwan_mourya</p>
+    <p class="text-white text-lg">Here’s a little about me and my journey</p>
+  </header>
+
+  <!-- Profile Image with Name -->
+  <div class="flex flex-col items-center space-y-4 mt-6">
+    <div class="rounded-full w-60 h-60 overflow-hidden border-4 border-white shadow-1g backdrop-blur-md">
+      <img 
+        src="https://i.ibb.co/gF78ZMLD/bhagwan.jpg" 
+        alt="Bhagwan Mourya" 
+        class="w-full h-full object-cover"
+      />
+    </div>
+    <p class="text-lg font-semibold text-white">Bhagwan_Mourya</p>
+  </div>
+
+  <!-- YouTube Video Centered with Blur -->
+  <div class="flex justify-center my-10">
+    <div class="w-full max-w-[800px] aspect-video rounded-lg overflow-hidden shadow-lg backdrop-blur-md bg-white/10">
+      <iframe 
+        class="w-full h-full"
+        src="https://www.youtube.com/embed/tQ8qFg7O-iU"
+        title="MY FIRST VLOG ❤ || my first video on YouTube || sn_vloger"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+
+  <!-- Reusable Section Style -->
+  <section id="about" class="bg-white/10 backdrop-blur-md p-8 rounded-xl shadow-lg max-w-4xl mx-auto my-6">
+    <h3 class="text-2xl font-semibold mb-4 text-blue-400">About Me</h3>
+    <p><strong>Name:</strong> Bhagwan Mourya</p>
+    <p><strong>Location:</strong> Boisar</p>
+    <p><strong>Education:</strong> B.Tech in Computer Science, St John College of Engineering</p>
+  </section>
+
+  <section id="achievements" class="bg-white/10 backdrop-blur-md p-8 rounded-xl shadow-lg max-w-4xl mx-auto my-6">
+    <h3 class="text-2xl font-semibold mb-4 text-blue-400">Achievements</h3>
+    <ul class="list-disc list-inside space-y-2">
+      <li>Winner of Science Exhibition 2023</li>
+      <li>10km finisher</li>
+      <li>1st prize in Sketching, 2021</li>
+    </ul>
+  </section>
+
+  <section id="goals" class="bg-white/10 backdrop-blur-md p-8 rounded-xl shadow-lg max-w-4xl mx-auto my-6">
+    <h3 class="text-2xl font-semibold mb-4 text-blue-400">Future Goals</h3>
+    <p>I aim to become a full-stack developer and contribute to impactful open-source projects. I also plan to pursue a master’s degree in Artificial Intelligence.</p>
+  </section>
+
+  <section class="bg-white/10 backdrop-blur-md p-8 rounded-xl shadow-lg max-w-4xl mx-auto my-6">
+    <h3 class="text-2xl font-semibold mb-4 text-blue-400">Hobbies</h3>
+    <p>I enjoy learning new skills, photography, vlogging, and cycling. These activities keep me creative, sharp, and physically active.</p>
+  </section>
+
+  <section class="bg-white/10 backdrop-blur-md p-8 rounded-xl shadow-lg max-w-4xl mx-auto my-6">
+    <h3 class="text-2xl font-semibold mb-4 text-blue-400">Role Models</h3>
+    <p>My role model is Mr Indian Hacker for his experiments and inspiring struggle story, motivating me to work hard.</p>
+  </section>
+
+  <section class="bg-white/10 backdrop-blur-md p-8 rounded-xl shadow-lg max-w-4xl mx-auto my-6">
+    <h3 class="text-2xl font-semibold mb-4 text-blue-400">Favorite Books</h3>
+    <p><em>"Atomic Habits"</em> helped me improve productivity. <em>"Deep Work"</em> taught me how to focus in a distracted world.</p>
+  </section>
+
+  <section class="bg-white/10 backdrop-blur-md p-8 rounded-xl shadow-lg max-w-4xl mx-auto my-6">
+    <h3 class="text-2xl font-semibold mb-4 text-blue-400">Favorite Startups</h3>
+    <ul class="list-disc list-inside space-y-2">
+      <li><strong>Notion:</strong> Innovative and user-friendly productivity tool.</li>
+      <li><strong>Figma:</strong> Changed how design collaboration works.</li>
+    </ul>
+  </section>
+
+  <section class="bg-white/10 backdrop-blur-md p-8 rounded-xl shadow-lg max-w-4xl mx-auto my-6">
+    <h3 class="text-2xl font-semibold mb-4 text-blue-400">Volunteering Experience</h3>
+    <p>I volunteer with Code for Good, teaching coding to underprivileged students and organizing tech awareness workshops.</p>
+  </section>
+
+  <!-- Footer -->
+  <footer id="contact" class="bg-white/10 backdrop-blur-md text-white text-center p-6 mt-8 rounded-t-xl shadow-inner">
+    <p>&copy; 2025 Bhagwan Mourya. All rights reserved.</p>
+    <p>Contact: Bhagwanmourya60@email.com || Instagram: @Bhagwan_mourya</p>
+  </footer>
+
+</body>
+</html>
