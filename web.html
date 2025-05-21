@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bhagwan Mourya - Portfolio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <style>
+    :root {
+      --bg-color: #000000;
+      --text-color: #ffffff;
+      --card-bg: rgba(255, 255, 255, 0.1);
+      --primary-color: #3b82f6; /* Tailwind blue-400 */
+      --focus-color: #f472b6;   /* Tailwind pink-400 */
+    }
+    body.light {
+      --bg-color: #ffffff;
+      --text-color: #000000;
+      --card-bg: rgba(0, 0, 0, 0.05);
+    }
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      transition: background-color 0.5s, color 0.5s;
+      scroll-behavior: smooth;
+      font-feature-settings: "liga" 0; /* disable ligatures */
+      font-family: 'Inter', system-ui, sans-serif;
+      min-height: 100vh;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+    }
+    section, nav, header, footer {
+      background-color: var(--card-bg);
+      transition: background-color 0.5s;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+      border-radius: 1rem;
+    }
+    nav a {
+      outline-offset: 3px;
+      color: var(--text-color);
+      font-weight: 600;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    nav a:hover,
+    nav a:focus-visible {
+      color: var(--focus-color);
+      outline: none;
+      text-decoration: underline;
+    }
+    #map {
+      height: 400px;
+      width: 100%;
+      max-width: 600px;
+      margin: 24px auto 12px auto;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.4);
+      transition: box-shadow 0.3s ease;
+    }
+    #map:focus-visible {
+      outline: 3px solid var(--focus-color);
+      outline-offset: 4px;
+    }
+    #toggle-mode-btn {
+      position: fixed;
+      bottom: 24px;
+      left: 24px;
+      background-color: #6b7280;
+      color: white;
+      padding: 12px 18px;
+      border-radius: 9999px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+      cursor: pointer;
+      z-index: 1000;
+      transition: background-color 0.3s, transform 0.2s;
+      font-weight: 600;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #toggle-mode-btn:hover,
+    #toggle-mode-btn:focus-visible {
+      background-color: #4b5563;
+      outline: none;
+      transform: scale(1.05);
+    }
+    header {
+      padding-top: 5rem;
+      padding-bottom: 5rem;
+      background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%);
+      color: white;
+      box-shadow: 0 12px 20px rgba(14,165,233,0.6);
+      border-radius: 0 0 2rem 2rem;
+      text-align: center;
+    }
+    .profile-pic {
+      border-radius: 9999px;
+      width: 15rem;
+      height: 15rem;
+      overflow: hidden;
+      border: 5px solid white;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+    .profile-pic:hover,
+    .profile-pic:focus-visible {
+      transform: scale(1.05);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.8);
+      outline: none;
+    }
+    iframe {
+      border-radius: 1rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      transition: box-shadow 0.3s ease;
+    }
+    iframe:hover,
+    iframe:focus-visible {
+      box-shadow: 0 12px 36px rgba(0,0,0,0.7);
+      outline: none;
+    }
+    section {
+      max-width: 42rem;
+      margin: 2rem auto;
+      padding: 2rem 2.5rem;
+      border-radius: 1rem;
+      background-color: var(--card-bg);
+    }
+    h3 {
+      color: var(--primary-color);
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    footer {
+      padding: 1.5rem 1rem;
+      background-color: var(--card-bg);
+      font-size: 0.875rem;
+      color: var(--text-color);
+      margin-top: 3rem;
+      text-align: center;
+      border-radius: 1.5rem 1.5rem 0 0;
+      box-shadow: inset 0 0 10px rgba(255,255,255,0.1);
+    }
+    footer a {
+      color: var(--text-color);
+      text-decoration: underline;
+      transition: color 0.3s ease;
+      font-weight: 600;
+    }
+    footer a:hover,
+    footer a:focus-visible {
+      color: var(--focus-color);
+      outline: none;
+    }
+    /* Social Buttons below map */
+    #social-buttons {
+      max-width: 600px;
+      margin: 0 auto 2rem auto;
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+    }
+    #social-buttons a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      border-radius: 9999px;
+      background-color: var(--primary-color);
+      color: white;
+      font-size: 1.5rem;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(59,130,246,0.6);
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+    #social-buttons a:hover,
+    #social-buttons a:focus-visible {
+      background-color: var(--focus-color);
+      outline: none;
+      transform: scale(1.1);
+    }
+    /* Responsive tweaks */
+    @media (max-width: 640px) {
+      header {
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+        font-size: 0.9rem;
+      }
+      .profile-pic {
+        width: 11rem;
+        height: 11rem;
+        border-width: 4px;
+      }
+      section {
+        margin: 1.5rem 1rem;
+        padding: 1.5rem 2rem;
+      }
+      nav ul {
+        gap: 3rem;
+      }
+    }
+  </style>
+</head>
+<body class="text-white font-sans" lang="en">
+
+  <!-- Toggle Theme Button -->
+  <button id="toggle-mode-btn" aria-label="Toggle light and dark mode" aria-pressed="false" title="Toggle light/dark mode">
+    <span id="toggle-icon" aria-hidden="true">🌙</span>
+    <span id="toggle-text">Dark Mode</span>
+  </button>
+
+  <!-- Navbar -->
+  <nav
+    class="backdrop-blur-md shadow-md p-4 flex justify-between items-center sticky top-0 z-50"
+    role="navigation"
+    aria-label="Primary navigation"
+  >
+    <h1 class="text-xl font-bold" style="color: var(--primary-color);">My Portfolio</h1>
+    <ul class="flex space-x-6 text-lg">
+      <li><a href="#about" class="focus:outline-none focus:ring-2 focus:ring-pink-400 rounded">About</a></li>
+      <li><a href="#achievements" class="focus:outline-none focus:ring-2 focus:ring-pink-400 rounded">Achievements</a></li>
+      <li><a href="#goals" class="focus:outline-none focus:ring-2 focus:ring-pink-400 rounded">Goals</a></li>
+      <li><a href="#contact" class="focus:outline-none focus:ring-2 focus:ring-pink-400 rounded">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- Header Section -->
+  <header tabindex="0" aria-label="Welcome header">
+    <h2 class="text-4xl font-bold mb-2" tabindex="-1">Welcome to My Personal Portfolio</h2>
+    <p class="font-bold text-lg">Hello, I am <span class="underline decoration-pink-400" tabindex="-1">Bhagwan_mourya</span></p>
+    <p class="text-lg max-w-xl mx-auto mt-2" tabindex="-1">Here’s a little about me and my journey.</p>
+  </header>
+
+  <!-- Profile Image with Name -->
+  <section class="flex flex-col items-center space-y-4 mt-8" tabindex="0" aria-label="Profile picture and name">
+    <div class="profile-pic" tabindex="0" role="img" aria-label="Profile picture of Bhagwan Mourya" aria-describedby="profile-name">
+      <img 
+        src="https://i.ibb.co/gF78ZMLD/bhagwan.jpg" 
+        alt="Bhagwan Mourya smiling" 
+        class="w-full h-full object-cover"
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+    <p id="profile-name" class="text-lg font-semibold select-text">Bhagwan_Mourya</p>
+  </section>
+
+  <!-- YouTube Video -->
+  <section aria-label="YouTube video section" tabindex="0" class="flex justify-center my-12">
+    <div class="w-full max-w-[800px] aspect-video rounded-lg overflow-hidden shadow-lg backdrop-blur-md" tabindex="0">
+      <iframe 
+        class="w-full h-full"
+        src="https://www.youtube.com/embed/tQ8qFg7O-iU"
+        title="MY FIRST VLOG ❤ || my first video on YouTube || sn_vloger"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen
+        loading="lazy"
+        tabindex="-1"
+      ></iframe>
+    </div>
+  </section>
+
+  <!-- Sections -->
+  <main>
+    <section id="about" tabindex="0" aria-labelledby="about-title">
+      <h3 id="about-title">About Me</h3>
+      <p><strong>Name:</strong> Bhagwan Mourya</p>
+      <p><strong>Location:</strong> Boisar</p>
+      <p><strong>Education:</strong> B.Tech in Computer Science, St John College of Engineering</p>
+    </section>
+
+    <section id="achievements" tabindex="0" aria-labelledby="achievements-title">
+      <h3 id="achievements-title">Achievements</h3>
+      <ul class="list-disc list-inside space-y-2">
+        <li>Winner of Science Exhibition 2023</li>
+        <li>10km finisher</li>
+        <li>1st prize in Sketching, 2021</li>
+      </ul>
+    </section>
+
+    <section id="goals" tabindex="0" aria-labelledby="goals-title">
+      <h3 id="goals-title">Future Goals</h3>
+      <p>I aim to become a full-stack developer and contribute to impactful open-source projects. I also plan to pursue a master’s degree in Artificial Intelligence.</p>
+    </section>
+
+    <section tabindex="0" aria-labelledby="hobbies-title">
+      <h3 id="hobbies-title">Hobbies</h3>
+      <p>I enjoy learning new skills, photography, vlogging, and cycling. These activities keep me creative, sharp, and physically active.</p>
+    </section>
+
+    <section tabindex="0" aria-labelledby="role-models-title">
+      <h3 id="role-models-title">Role Models</h3>
+      <p>My role model is Mr Indian Hacker for his experiments and inspiring struggle story, motivating me to work hard.</p>
+    </section>
+
+    <section tabindex="0" aria-labelledby="favorite-books-title">
+      <h3 id="favorite-books-title">Favorite Books</h3>
+      <p><em>"Atomic Habits"</em> helped me improve productivity. <em>"Deep Work"</em> taught me how to focus in a distracted world.</p>
+    </section>
+
+    <section tabindex="0" aria-labelledby="favorite-startups-title">
+      <h3 id="favorite-startups-title">Favorite Startups</h3>
+      <ul class="list-disc list-inside space-y-2">
+        <li><strong>Notion:</strong> Innovative and user-friendly productivity tool.</li>
+        <li><strong>Figma:</strong> Changed how design collaboration works.</li>
+      </ul>
+    </section>
+
+    <section tabindex="0" aria-labelledby="volunteering-title">
+      <h3 id="volunteering-title">Volunteering Experience</h3>
+      <p>Participated in community clean-ups and educational workshops for underprivileged kids.</p>
+    </section>
+
+    <!-- Live Location Map -->
+    <section aria-label="Live location map" tabindex="0" aria-describedby="map-desc" class="mt-8">
+      <h3>My Live Location</h3>
+      <p id="map-desc" class="mb-2">Map showing my current location updated every 10 seconds.</p>
+      <div id="map" tabindex="0" aria-label="Map showing live location"></div>
+    </section>
+
+    <!-- Social Buttons below map -->
+    <div id="social-buttons" role="region" aria-label="Social media links">
+     <a href="https://www.youtube.com/@SN_vloger"
+   target="_blank"
+   rel="noopener noreferrer"
+   aria-label="YouTube channel"
+   title="YouTube"
+   style="
+     background-color: #FF0000;
+     color: white;
+     border-radius: 50%;
+     width: 48px;
+     height: 48px;
+     display: inline-flex;
+     align-items: center;
+     justify-content: center;
+     margin: 0 8px;
+     text-decoration: none;
+     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+     transition: all 0.3s ease;"
+   onmouseover="this.style.backgroundColor='#cc0000'; this.style.transform='scale(1.05)'"
+   onmouseout="this.style.backgroundColor='#FF0000'; this.style.transform='scale(1)'">
+  <svg aria-hidden="true" focusable="false" width="26" height="26" fill="currentColor" viewBox="0 0 24 24">
+    <path d="M10 15.5l6-3.5-6-3.5v7zm12-3.5c0-2.21-.18-3.61-.45-4.66a2.99 2.99 0 0 0-2.09-2.09C18.61 5.18 17.21 5 15 5H9c-2.21 0-3.61.18-4.66.45a2.99 2.99 0 0 0-2.09 2.09C2.18 8.39 2 9.79 2 12s.18 3.61.45 4.66a2.99 2.99 0 0 0 2.09 2.09C5.39 19.82 6.79 20 9 20h6c2.21 0 3.61-.18 4.66-.45a2.99 2.99 0 0 0 2.09-2.09c.27-1.05.45-2.45.45-4.66z"/>
+  </svg>
+</a>
+
+
+    <a href="https://www.linkedin.com/in/bhagwan-mourya-0598a3293/"
+   target="_blank"
+   rel="noopener noreferrer"
+   aria-label="LinkedIn profile"
+   title="LinkedIn"
+   style="
+     background-color: #0a66c2;
+     color: white;
+     border-radius: 50%;
+     width: 40px;
+     height: 40px;
+     display: inline-flex;
+     align-items: center;
+     justify-content: center;
+     margin: 0 5px;
+     text-decoration: none;
+     transition: background 0.3s ease;"
+   onmouseover="this.style.backgroundColor='#004182'"
+   onmouseout="this.style.backgroundColor='#0a66c2'">
+  <svg aria-hidden="true" focusable="false" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+    <path d="M19 0h-14c-2.8 0-5 2.2-5 5v14c0 2.8 2.2 5 5 5h14c2.8 0 5-2.2 5-5v-14c0-2.8-2.2-5-5-5zm-11 19h-3v-10h3v10zm-1.5-11.3c-1 0-1.8-.8-1.8-1.7s.8-1.8 1.7-1.8c1 0 1.8.8 1.8 1.7s-.8 1.8-1.7 1.8zm13.5 11.3h-3v-5.5c0-1.3-.5-2.2-1.6-2.2-0.9 0-1.4.6-1.6 1.2-.1.2-.1.5-.1.7v5.8h-3s.1-9.4 0-10.3h3v1.5c.4-.6 1.2-1.5 2.9-1.5 2.1 0 3.6 1.4 3.6 4.4v5.9z"/>
+  </svg>
+</a>
+
+      <a href="https://www.instagram.com/bhagawan_mourya?igsh=MTQzNXByeHZyZWd6eg=="
+   target="_blank"
+   rel="noopener noreferrer"
+   aria-label="Instagram profile"
+   title="Instagram"
+   style="
+     background-color: #ec4899;
+     color: white;
+     border-radius: 50%;
+     width: 40px;
+     height: 40px;
+     display: inline-flex;
+     align-items: center;
+     justify-content: center;
+     margin: 0 5px;
+     text-decoration: none;
+     transition: background 0.3s ease;"
+   onmouseover="this.style.backgroundColor='#db2777'"
+   onmouseout="this.style.backgroundColor='#ec4899'">
+  <svg aria-hidden="true" focusable="false" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+    <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5a4.25 4.25 0 0 0 4.25-4.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5zm4.25 3.75a4.75 4.75 0 1 1 0 9.5 4.75 4.75 0 0 1 0-9.5zm0 1.5a3.25 3.25 0 1 0 0 6.5 3.25 3.25 0 0 0 0-6.5zm5.5-.875a1.125 1.125 0 1 1-2.25 0 1.125 1.125 0 0 1 2.25 0z"/>
+  </svg>
+</a>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer tabindex="0">
+    <p>© 2024 Bhagwan Mourya. All rights reserved.</p>
+  </footer>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <script>
+    // Dark mode toggle logic
+    const btn = document.getElementById('toggle-mode-btn');
+    const icon = document.getElementById('toggle-icon');
+    const text = document.getElementById('toggle-text');
+
+    // Initialize mode from localStorage or default dark
+    let darkMode = localStorage.getItem('darkMode') !== 'false';
+
+    function updateMode() {
+      if(darkMode){
+        document.body.classList.remove('light');
+        btn.setAttribute('aria-pressed', 'false');
+        icon.textContent = '🌙';
+        text.textContent = 'Dark Mode';
+      } else {
+        document.body.classList.add('light');
+        btn.setAttribute('aria-pressed', 'true');
+        icon.textContent = '☀️';
+        text.textContent = 'Light Mode';
+      }
+      localStorage.setItem('darkMode', darkMode);
+    }
+
+    btn.addEventListener('click', () => {
+      darkMode = !darkMode;
+      updateMode();
+    });
+
+    updateMode();
+
+    // Leaflet Map Setup
+    const map = L.map('map').setView([19.7545, 72.7538], 14); // Boisar approx
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Custom marker icon with animation
+    const animatedIcon = L.divIcon({
+      className: 'animated-marker',
+      html: '<div style="background:#3b82f6; width:24px; height:24px; border-radius:50%; border:3px solid white; animation: pulse 2s infinite;"></div>',
+      iconSize: [24, 24],
+      iconAnchor: [12, 12]
+    });
+
+    // Pulse animation style added dynamically
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes pulse {
+        0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(59,130,246,0.7); }
+        70% { transform: scale(1.2); box-shadow: 0 0 0 15px rgba(59,130,246,0); }
+        100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(59,130,246,0); }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Marker reference
+    let marker = L.marker([19.7545, 72.7538], {icon: animatedIcon}).addTo(map).bindPopup("My Location");
+
+    function updatePosition(position) {
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+      marker.setLatLng([lat, lng]);
+      map.setView([lat, lng], 14);
+    }
+
+    function errorPosition(err) {
+      console.warn(`ERROR(${err.code}): ${err.message}`);
+    }
+
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(updatePosition, errorPosition);
+      setInterval(() => {
+        navigator.geolocation.getCurrentPosition(updatePosition, errorPosition);
+      }, 10000); // update every 10 seconds
+    } else {
+      alert("Geolocation is not supported by your browser.");
+    }
+  </script>
+
+</body>
+</html>
